@@ -1,0 +1,60 @@
+<div class="container">
+    <h1>To-Do List</h1>
+    <!--Form to add a new to do item-->
+    <form action="/add" class="my-3" method="POST">
+        <div class="input-group">
+            <input class="form-control" name="todo" placeholder="Add a new task" required type="text">
+            <input class="form-control" name="due_date" required type="date">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Add</button>
+            </div>
+        </div>
+    </form>
+
+    <!--List of Existing To Do Items-->
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">To Do Item</th>
+            <th class="text-center" scope="col">Status</th>
+            <th class="text-center" scope="col">Due Date</th>
+            <th class="text-center" scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for todo in todos %}
+        {% if todo.status != "complete" %}
+
+        <tr>
+            <form action="/update_todo" method="POST">
+                <td>{{todo.task}}</td>
+                <td class="text-center">
+                    <!-- If Statements to determine badge type for the status -->
+                    {% if todo.due_status.lower() == 'on time' %}
+                    <span class="badge badge-secondary">{{todo.due_status}}</span>
+                    {% elif todo.due_status.lower() == 'past due' %}
+                    <span class="badge badge-danger">{{todo.due_status}}</span>
+                    {% elif todo.due_status.lower() == 'due today' %}
+                    <span class="badge badge-warning">{{todo.due_status}}</span>
+                    {% else %}
+                    <span class="badge badge-secondary">Ifs failed</span>
+                    {% endif %}
+                </td>
+                <td class="text-center text-nowrap">
+
+                    <input class="form-control" name="due_date" required type="date" value="{{todo.due_date}}">
+
+                </td>
+                <td class="text-center text-nowrap">
+                    <input name="task_id" type="hidden" value="{{todo.task_id}}">
+                    <button class="btn btn-sm btn-warning" type="submit">Update</button>
+            </form>
+            <a class="btn btn-sm btn-success"
+               href="{{ url_for('complete_task', task_id=todo.task_id) }}">Complete</a>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
